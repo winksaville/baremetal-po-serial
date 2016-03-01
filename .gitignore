@@ -1,0 +1,11 @@
+build/
+x86_64-elf/
+crosstool-ng/
+gcc/
+isofiles/
+isofiles.gas/
+*.img
+*.o.txt
+*.elf.txt
+*.o
+*.elf
