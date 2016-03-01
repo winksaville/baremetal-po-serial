@@ -14,6 +14,8 @@
 
 global start
 extern long_mode_start
+extern putchar_32
+extern reset_32
 
 section .text
 bits 32
@@ -22,6 +24,11 @@ start:
     ; Move Multiboot info pointer to edi to pass it to the kernel. We must not
     ; modify the `edi` register until the kernel it called.
     mov edi, ebx
+
+    ;push ax
+    mov  al,'a'
+    call putchar_32
+    ;pop  ax
 
     call check_multiboot
     call check_cpuid
@@ -96,14 +103,25 @@ enable_paging:
 
     ret
 
-; Prints `ERR: ` and the given error code to screen and hangs.
+; Prints `ERR: ` and the given error and resets the cpu.
 ; parameter: error code (in ascii) in al
 error:
-    mov dword [0xb8000], 0x4f524f45
-    mov dword [0xb8004], 0x4f3a4f52
-    mov dword [0xb8008], 0x4f204f20
-    mov byte  [0xb800a], al
-    hlt
+    push ax
+    mov  al, 'E'
+    call putchar_32
+    mov  al, 'R'
+    call putchar_32
+    mov  al, 'R'
+    call putchar_32
+    mov  al, ':'
+    call putchar_32
+    mov  al, ' '
+    call putchar_32
+    pop  ax
+    call putchar_32
+    mov  al, 0xA
+    call putchar_32
+    jmp reset_32
 
 ; Throw error 0 if eax doesn't contain the Multiboot 2 magic value (0x36d76289).
 check_multiboot:
