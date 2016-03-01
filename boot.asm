@@ -25,10 +25,10 @@ start:
     ; modify the `edi` register until the kernel it called.
     mov edi, ebx
 
-    ;push ax
+    push ax
     mov  al,'a'
     call putchar_32
-    ;pop  ax
+    pop  ax
 
     call check_multiboot
     call check_cpuid
